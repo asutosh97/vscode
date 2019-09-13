@@ -8,6 +8,8 @@ import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation
 import { IQuickInputService, IQuickPickItem } from 'vs/platform/quickinput/common/quickInput';
 import { IStorageService, StorageScope } from 'vs/platform/storage/common/storage';
 import { IProductService } from 'vs/platform/product/common/product';
+import { IEditorService } from 'vs/workbench/services/editor/common/editorService';
+import { URI } from 'vs/base/common/uri';
 
 export const enum ConfigureTrustedDomainActionType {
 	ToggleTrustAll = 'toggleTrustAll',
@@ -15,6 +17,20 @@ export const enum ConfigureTrustedDomainActionType {
 	Configure = 'configure',
 	Reset = 'reset'
 }
+
+export const configCommand = {
+	id: 'workbench.action.configureTrustedDomain2',
+	description: {
+		description: localize('configureTrustedDomain2', 'Configure Trusted Domains for Link Protection 2'),
+		args: []
+	},
+	handler: async (accessor: ServicesAccessor) => {
+		const editorService = accessor.get(IEditorService);
+		const u = URI.parse('trustedDomains:/config');
+		editorService.openEditor({ resource: u, mode: 'jsonc' });
+		return;
+	}
+};
 
 export const configureTrustedDomainSettingsCommand = {
 	id: 'workbench.action.configureTrustedDomain',

@@ -14,8 +14,9 @@ import { Registry } from 'vs/platform/registry/common/platform';
 import { IURLService } from 'vs/platform/url/common/url';
 import { Extensions as ActionExtensions, IWorkbenchActionRegistry } from 'vs/workbench/common/actions';
 import { Extensions as WorkbenchExtensions, IWorkbenchContributionsRegistry } from 'vs/workbench/common/contributions';
-import { configureTrustedDomainSettingsCommand } from 'vs/workbench/contrib/url/common/trustedDomains';
+import { configureTrustedDomainSettingsCommand, configCommand } from 'vs/workbench/contrib/url/common/trustedDomains';
 import { OpenerValidatorContributions } from 'vs/workbench/contrib/url/common/trustedDomainsValidator';
+import { TrustedDomainsContentProvider } from 'vs/workbench/contrib/url/common/trustedDomainsFileSystemProvider';
 
 export class OpenUrlAction extends Action {
 	static readonly ID = 'workbench.action.url.openUrl';
@@ -55,9 +56,19 @@ MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
 		title: configureTrustedDomainSettingsCommand.description.description
 	}
 });
+CommandsRegistry.registerCommand(configCommand);
+MenuRegistry.appendMenuItem(MenuId.CommandPalette, {
+	command: {
+		id: configCommand.id,
+		title: configCommand.description.description
+	}
+});
 
 Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(
 	OpenerValidatorContributions,
 	LifecyclePhase.Restored
 );
-
+Registry.as<IWorkbenchContributionsRegistry>(WorkbenchExtensions.Workbench).registerWorkbenchContribution(
+	TrustedDomainsContentProvider,
+	LifecyclePhase.Eventually
+);
